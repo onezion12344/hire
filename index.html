@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order a small job — Harry Huang</title>
+<meta name="description" content="Fixed price, fixed scope, two to five days. Spreadsheet cleanup, invoice folders, PDF to Excel. Hong Kong, one job at a time, written acceptance test before I start.">
+<meta property="og:title" content="Order a small job — Harry Huang">
+<meta property="og:description" content="Fixed price, fixed scope, 2–5 days. One job at a time, Hong Kong.">
+<meta property="og:type" content="website">
+<style>
+  :root{
+    --bg:#08080b; --panel:#0f0f14; --panel2:#12121a; --line:#23232c; --fg:#ececf1;
+    --muted:#a2a2ae; --dim:#71717e; --accent:#f0b64b; --green:#7fd1a6;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 32px}
+  .zh{font-size:15px;line-height:1.9;letter-spacing:.02em;color:var(--muted)}
+
+  .nav{position:fixed;inset:0 0 auto 0;z-index:50;background:rgba(8,8,11,.72);backdrop-filter:blur(18px);border-bottom:1px solid transparent;transition:background .3s,border-color .3s}
+  .nav.solid{background:rgba(8,8,11,.94);border-bottom-color:var(--line)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none}
+  .brand span{color:var(--accent)}
+  .nav-links{display:flex;gap:26px;font-size:14px;color:var(--muted)}
+  .nav-links a{text-decoration:none;transition:color .2s}
+  .nav-links a:hover{color:var(--fg)}
+  @media (max-width:720px){.nav-links{display:none}}
+
+  header{padding:132px 0 64px;background:radial-gradient(900px 420px at 18% -10%,rgba(240,182,75,.08),transparent 70%)}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 22px}
+  h1{font-family:var(--serif);font-weight:400;letter-spacing:-.02em;font-size:clamp(38px,6vw,68px);line-height:1.05;margin:0 0 24px;max-width:17ch}
+  h1 em{font-style:italic;color:var(--accent)}
+  .lede{font-size:clamp(17px,2vw,19px);color:var(--muted);max-width:58ch;margin:0 0 18px}
+  .lede strong{color:var(--fg);font-weight:500}
+  .zh-hero{margin:0 0 34px}
+  .stats{display:flex;flex-wrap:wrap;gap:40px;margin:0 0 36px;padding:0;list-style:none}
+  .stats li{display:flex;flex-direction:column;gap:2px}
+  .stats b{font-family:var(--mono);font-size:24px;font-weight:500;letter-spacing:-.02em}
+  .stats span{font-size:12px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+  .cta{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;border:1px solid var(--line);text-decoration:none;font-size:14px;background:none;color:var(--fg);font-family:inherit;cursor:pointer;transition:transform .25s var(--ease),border-color .25s,background .25s}
+  .btn:hover{transform:translateY(-2px);border-color:#3a3a46}
+  .btn.primary{background:var(--fg);color:#08080b;border-color:var(--fg);font-weight:600}
+  .btn.primary:hover{background:#fff}
+  .btn:focus-visible,a:focus-visible,summary:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+  section{padding:84px 0}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:24px;margin-bottom:40px;flex-wrap:wrap}
+  h2{font-family:var(--serif);font-weight:400;font-size:clamp(28px,4vw,40px);letter-spacing:-.01em;margin:0}
+  .sec-head p{margin:0;color:var(--dim);font-size:13px;font-family:var(--mono)}
+
+  .offers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media (max-width:900px){.offers{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px 24px;display:flex;flex-direction:column;gap:14px;transition:transform .3s var(--ease),border-color .3s}
+  .card:hover{transform:translateY(-3px);border-color:#34343f}
+  .card h3{font-size:19px;margin:0;letter-spacing:-.01em;line-height:1.3}
+  .price{display:flex;align-items:baseline;gap:8px;font-family:var(--mono)}
+  .price b{font-size:27px;font-weight:500;letter-spacing:-.02em}
+  .price s{color:var(--dim);font-size:14px;text-decoration:none}
+  .chip{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(240,182,75,.35);border-radius:999px;padding:3px 9px;align-self:flex-start}
+  .card ul{margin:0;padding-left:18px;color:var(--muted);font-size:15px;line-height:1.7}
+  .card li+li{margin-top:4px}
+  .done{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);font-size:14px;color:var(--green)}
+  .done b{color:var(--fg);font-weight:500}
+  .small{font-size:13px;color:var(--dim);margin:0}
+
+  .wide{margin-top:18px;display:grid;grid-template-columns:1.4fr 1fr;gap:28px;padding:28px 24px;background:var(--panel2);border:1px solid var(--line);border-radius:16px;align-items:center}
+  @media (max-width:800px){.wide{grid-template-columns:1fr}}
+  .wide h3{margin:0 0 8px;font-size:20px}
+  .wide p{margin:0;color:var(--muted);font-size:15px}
+  .wide .price b{font-size:23px}
+  .wide .price{justify-content:flex-start}
+  .wide .stack{display:flex;flex-direction:column;gap:10px}
+
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;counter-reset:s}
+  @media (max-width:900px){.steps{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.steps{grid-template-columns:1fr}}
+  .step{position:relative;padding-top:34px;border-top:1px solid var(--line)}
+  .step::before{counter-increment:s;content:"0" counter(s);position:absolute;top:0;left:0;font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+  .step h4{margin:0 0 8px;font-size:16px}
+  .step p{margin:0;color:var(--muted);font-size:14.5px}
+
+  .brief{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start}
+  @media (max-width:860px){.brief{grid-template-columns:1fr}}
+  .check{list-style:none;margin:0;padding:0;color:var(--muted);font-size:15.5px}
+  .check li{position:relative;padding-left:24px;margin-bottom:12px}
+  .check li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border:1px solid var(--accent);border-radius:2px;transform:rotate(45deg)}
+  .briefbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+  textarea{width:100%;min-height:250px;resize:vertical;background:#0b0b10;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:14px;font-family:var(--mono);font-size:13.5px;line-height:1.7}
+  .briefbox .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+  .copied{font-size:13px;color:var(--green);opacity:0;transition:opacity .25s}
+  .copied.on{opacity:1}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:44px}
+  @media (max-width:860px){.cols{grid-template-columns:1fr}}
+  .terms{list-style:none;margin:0;padding:0}
+  .terms li{padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;color:var(--muted);display:flex;gap:14px}
+  .terms li:last-child{border-bottom:none}
+  .terms b{color:var(--fg);font-weight:500;flex:0 0 118px;font-size:14px}
+
+  .proof{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media (max-width:760px){.proof{grid-template-columns:1fr}}
+  .proof a{display:block;padding:20px;border:1px solid var(--line);border-radius:14px;text-decoration:none;background:var(--panel);transition:border-color .25s,transform .25s var(--ease)}
+  .proof a:hover{border-color:#34343f;transform:translateY(-2px)}
+  .proof strong{display:block;font-size:16px;margin-bottom:6px}
+  .proof span{font-size:14px;color:var(--dim)}
+
+  details{border-bottom:1px solid var(--line);padding:18px 0}
+  details summary{cursor:pointer;font-size:16px;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:baseline}
+  details summary::-webkit-details-marker{display:none}
+  details summary::after{content:"+";color:var(--accent);font-family:var(--mono)}
+  details[open] summary::after{content:"–"}
+  details p{margin:12px 0 0;color:var(--muted);font-size:15px;max-width:70ch}
+
+  footer{border-top:1px solid var(--line);padding:52px 0 68px;color:var(--dim);font-size:14px}
+  footer .cta{margin-bottom:22px}
+  footer a{color:var(--muted)}
+  .fineprint{margin:18px 0 0;font-size:13px;color:var(--dim);max-width:66ch}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">Harry Huang <span>/ order</span></a>
+    <div class="nav-links">
+      <a href="#offers">Offers</a>
+      <a href="#how">How it works</a>
+      <a href="#brief">Brief</a>
+      <a href="#terms">Terms</a>
+      <a href="#faq">FAQ</a>
+    </div>
+  </div>
+</nav>
+
+<header id="top">
+  <div class="wrap">
+    <p class="eyebrow">One job at a time · Hong Kong, GMT+8</p>
+    <h1>Small job. <em>Fixed price.</em> Written acceptance test.</h1>
+    <p class="lede">I clean spreadsheets, turn PDF piles into rows, and automate the folder you re-do every month. <strong>You get a price and a “done means this” sentence before I start</strong>, then a clean file, a log of what changed, and a script you can run again.</p>
+    <p class="lede zh zh-hero" lang="zh-Hant">表格整理、PDF 轉表格、每月重複的檔案流程。固定範圍，先講清驗收標準，再一次一單。</p>
+    <ul class="stats">
+      <li><b>2–5 days</b><span>delivery</span></li>
+      <li><b>HK$480+</b><span>entry jobs</span></li>
+      <li><b>1 revision</b><span>included</span></li>
+      <li><b>24 h</b><span>reply, 09:00–21:00</span></li>
+    </ul>
+    <div class="cta">
+      <a class="btn primary" href="#offers">See the three offers</a>
+      <a class="btn" href="#brief">Copy the brief template</a>
+    </div>
+  </div>
+</header>
+
+<section id="offers">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Three fixed-price jobs</h2>
+      <p>intro price · first 3 orders per job</p>
+    </div>
+
+    <div class="offers">
+      <article class="card">
+        <h3>Sheet rescue</h3>
+        <div class="price"><b>HK$480</b><s>US$62</s></div>
+        <span class="chip">2 days</span>
+        <ul>
+          <li>One file, up to 5,000 rows</li>
+          <li>Duplicates removed, dates and currency normalised</li>
+          <li>Every null and excluded row written down</li>
+          <li>Clean CSV + one chart + a README</li>
+        </ul>
+        <p class="done"><b>Done means:</b> row counts reconcile, key columns have no nulls, the chart total equals the cleaned total.</p>
+      </article>
+
+      <article class="card">
+        <h3>Invoice folder → CSV</h3>
+        <div class="price"><b>HK$880</b><s>US$113</s></div>
+        <span class="chip">2–3 days</span>
+        <ul>
+          <li>One folder, up to 100 files</li>
+          <li>Required fields validated, duplicates caught</li>
+          <li>Every skipped file gets a reason</li>
+          <li>Rerun-safe: second run is identical</li>
+        </ul>
+        <p class="done"><b>Done means:</b> 100 files in, clean CSV and exception list out, no double counting on the second run.</p>
+      </article>
+
+      <article class="card">
+        <h3>PDF → Excel</h3>
+        <div class="price"><b>HK$380</b><s>US$49</s></div>
+        <span class="chip">2 days</span>
+        <ul>
+          <li>One layout, up to 10 PDFs</li>
+          <li>Field map agreed before I start</li>
+          <li>Validation report: what mapped, what did not</li>
+          <li>One mapping revision included</li>
+        </ul>
+        <p class="done"><b>Done means:</b> 10 PDFs → 10 rows or documented exceptions, totals reconcile.</p>
+      </article>
+    </div>
+
+    <div class="wide">
+      <div>
+        <h3>Something bigger than one file</h3>
+        <p>A dashboard with several sources, an internal tool, a workflow with a UI. I quote after looking at one sample, not from a form.</p>
+      </div>
+      <div class="stack">
+        <div class="price"><b>US$800+</b><s>dashboard / data product</s></div>
+        <div class="price"><b>US$1,000+</b><s>automation / internal tool</s></div>
+        <p class="small">Same rule: fixed scope, written acceptance, handover README.</p>
+      </div>
+    </div>
+    <p class="small" style="margin-top:18px">Intro price applies to the first three orders of each job; after that the standard price (HK$600 / HK$1,080 / HK$480). Half of any entry-job fee is credited toward the bigger build if you upgrade within 30 days.</p>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>How an order runs</h2>
+      <p>no discovery calls unless you want one</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <h4>You send one sample</h4>
+        <p>One file or one folder — not the whole archive. I reply within 24 h with the price and what “done” will mean, or say it is the wrong job for me.</p>
+      </div>
+      <div class="step">
+        <h4>Scope is written down</h4>
+        <p>One page: what is included, what is excluded, the acceptance test, the delivery date. Nothing starts until you reply “go”.</p>
+      </div>
+      <div class="step">
+        <h4>Deposit, then build</h4>
+        <p>50% up front, the other 50% on acceptance. I work on a copy of your data and send a dry-run before the final files.</p>
+      </div>
+      <div class="step">
+        <h4>Handover and deletion</h4>
+        <p>Files, script and a README that says how to rerun it. Your data is deleted after handover; defects reported in 14 days are fixed free.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="brief">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>The brief</h2>
+      <p>copy this, fill the blanks, send it</p>
+    </div>
+    <div class="brief">
+      <ul class="check">
+        <li><b>One sample.</b> A file with the same shape as the real one. Fake names are fine — I need the columns, not the customers.</li>
+        <li><b>The end state.</b> “One row per invoice, with a total I can check” beats “clean it up”.</li>
+        <li><b>Deadline and reader.</b> When you need it, and who opens the file after you.</li>
+        <li><b>Your tools.</b> Excel, Google Sheets, a folder on your desktop, an accounting system you cannot export from.</li>
+        <li><b>No passwords.</b> Never send an account login for any system. A folder and a file are enough.</li>
+      </ul>
+      <div class="briefbox">
+        <label class="small" for="brief-text" style="display:block;margin-bottom:8px">Brief template</label>
+        <textarea id="brief-text" spellcheck="false">What it is:
+One sample I can look at:
+What I want at the end:
+Deadline:
+Who reads the result:
+Tools I use:</textarea>
+        <div class="row">
+          <button class="btn" id="copy" type="button">Copy</button>
+          <a class="btn primary" id="mail" href="mailto:huangyang12344@gmail.com?subject=Small%20job">Email it</a>
+          <span class="copied" id="copied">Copied</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="terms">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Terms, up front</h2>
+      <p>the same lines go into every quote</p>
+    </div>
+    <div class="cols">
+      <ul class="terms">
+        <li><b>Payment</b><span>Through the platform we met on. 50% deposit, 50% on acceptance; above HK$5,000 it is 40 / 40 / 20.</span></li>
+        <li><b>Start</b><span>Work starts when the deposit clears and the sample arrives, not before.</span></li>
+        <li><b>Late input</b><span>Every day your input is late moves the delivery date by one day.</span></li>
+        <li><b>Changes</b><span>One revision inside the agreed scope. New requirements are a separate quote.</span></li>
+        <li><b>Capacity</b><span>Two jobs a week, maximum. The queue stays short on purpose.</span></li>
+        <li><b>Blackout</b><span>No new orders 7–16 Dec 2026 (exam week). Existing orders only.</span></li>
+      </ul>
+      <div>
+        <ul class="terms">
+          <li><b>Data</b><span>Worked on a copy, deleted after handover. No client data in the portfolio.</span></li>
+          <li><b>Accounts</b><span>I do not take passwords, and I never send mail from your address. Drafts only, you press send.</span></li>
+          <li><b>Ownership</b><span>Files, script and README are yours. I keep no licence to your data.</span></li>
+          <li><b>Platforms</b><span>Where a platform forbids automated messaging, I only draft — you paste.</span></li>
+        </ul>
+        <p class="small zh" lang="zh-Hant" style="margin-top:20px">付款經接單平台；開工前先寫清驗收標準。資料只做工副本，交付後刪除；不接手帳號密碼；信件只出草稿，由你發送。12 月 7–16 日考試週不接新單。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="proof">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Things I built that run today</h2>
+      <p>not screenshots of mockups</p>
+    </div>
+    <div class="proof">
+      <a href="https://wewrites.onezion.top/" target="_blank" rel="noopener"><strong>WeWrites</strong><span>A live tutoring site with its own admin, in use now.</span></a>
+      <a href="https://onezion12344.github.io/double-check-agent/" target="_blank" rel="noopener"><strong>Double-Check</strong><span>A six-phase verification pipeline, running in the browser.</span></a>
+      <a href="https://onezion12344.github.io/mac-closed-awake/" target="_blank" rel="noopener"><strong>MacClosedAwake</strong><span>A macOS menu-bar app: close the lid, stay awake.</span></a>
+    </div>
+    <p class="small" style="margin-top:18px">A wider set, with numbers and screenshots, is on the <a href="https://onezion12344.github.io/portfolio/" style="color:var(--fg)">portfolio page</a>.</p>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Questions that come up</h2>
+      <p>short answers</p>
+    </div>
+    <details>
+      <summary>Can you work with Google Sheets instead of Excel?</summary>
+      <p>Yes. Share a copy or export a CSV. The deliverable is a file you can open again, plus the steps to rerun it — not a live connection into your account.</p>
+    </details>
+    <details>
+      <summary>What if my file is bigger than the limit?</summary>
+      <p>Send it. I quote the difference before starting, and the acceptance test is rewritten to match the real size. Nothing is charged before you say go.</p>
+    </details>
+    <details>
+      <summary>How is this different from a cheap gig?</summary>
+      <p>You get a written exception log and a validation report, not just an output file. If a row was dropped, you can see which one and why. That is most of the work.</p>
+    </details>
+    <details>
+      <summary>Do you keep my data?</summary>
+      <p>No. It is worked on a copy, deleted after handover, and never appears in the portfolio. The README shows you how to run the same thing again on your own machine.</p>
+    </details>
+    <details>
+      <summary>Can you start today?</summary>
+      <p>Usually the next working day. I take one job at a time and two a week at most, so the first reply includes a real start date rather than “as soon as possible”.</p>
+    </details>
+    <details>
+      <summary>What can't you do?</summary>
+      <p>No medical, legal or financial advice; no written-off promises about hours saved; no reviews I did not earn; nothing that needs me to hold your account passwords or auto-send messages in your name.</p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cta">
+      <a class="btn primary" href="mailto:huangyang12344@gmail.com?subject=Small%20job">huangyang12344@gmail.com</a>
+      <a class="btn" href="https://contra.com/harry_huang_okz67sxh" target="_blank" rel="noopener">Contra</a>
+      <a class="btn" href="https://github.com/onezion12344" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn" href="https://onezion12344.github.io/portfolio/">Portfolio</a>
+    </div>
+    <p class="fineprint">Harry Huang · Hong Kong (GMT+8) · replies 09:00–21:00, within 24 h. Fixed scope, one job at a time, written acceptance before any work starts.</p>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('solid', window.scrollY > 12);
+  addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  const ta = document.getElementById('brief-text');
+  const copied = document.getElementById('copied');
+  const mail = document.getElementById('mail');
+  const sync = () => {
+    const body = encodeURIComponent(ta.value);
+    mail.href = 'mailto:huangyang12344@gmail.com?subject=' + encodeURIComponent('Small job') + '&body=' + body;
+  };
+  ta.addEventListener('input', sync); sync();
+
+  document.getElementById('copy').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(ta.value);
+    } catch (e) {
+      ta.select(); document.execCommand('copy');
+    }
+    copied.classList.add('on');
+    setTimeout(() => copied.classList.remove('on'), 1600);
+  });
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    const items = document.querySelectorAll('.card, .step, .proof a, .wide');
+    items.forEach(el => { el.style.opacity = 0; el.style.transform = 'translateY(14px)'; el.style.transition = 'opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1)'; });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        setTimeout(() => { el.style.opacity = 1; el.style.transform = 'none'; }, i * 60);
+        io.unobserve(el);
+      });
+    }, {threshold:.15});
+    items.forEach(el => io.observe(el));
+  }
+</script>
+</body>
+</html>
